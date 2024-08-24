@@ -1,6 +1,5 @@
 package com.model;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -14,7 +13,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ProductEncryptRequest {
-    private String id;
-    private String productName;
+public class EncryptionRequest {
+
+    private String encodedEncryptedMessage;
+    private String encodedEncryptedKey;
+    private String encodeEncryptedIV;
 }

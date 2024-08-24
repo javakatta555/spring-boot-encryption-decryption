@@ -1,5 +1,6 @@
 package com.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,6 +45,15 @@ public class JsonUtil {
             return mapper().readTree(src);
         } catch (Throwable t) {
             throw new RuntimeException(t);
+        }
+    }
+
+    public static String asJsonString(Object o) {
+        try {
+            return mapper().writeValueAsString(o);
+        } catch (JsonProcessingException e) {
+            String msg = "Could not convert object to Json";
+            throw new IllegalArgumentException(msg, e);
         }
     }
 }
