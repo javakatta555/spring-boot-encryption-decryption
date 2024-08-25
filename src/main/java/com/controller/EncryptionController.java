@@ -5,6 +5,7 @@ import com.model.ProductEncryptRequest;
 import com.utils.AsymmetricEncryptionUtil;
 import com.utils.JsonUtil;
 import com.utils.SymmetricEncryptionUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,16 +14,15 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Enumeration;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
+@Slf4j
 public class EncryptionController {
 
     @GetMapping("/symmetric")
@@ -48,14 +48,13 @@ public class EncryptionController {
                 .productName("TextBook")
                 .build();
         KeyStore keyStore = KeyStore.getInstance("PKCS12");
-        try (FileInputStream fis = new FileInputStream("/Users/admin/Documents/POC/spring-boot-encryption-decryption/src/main/resources/security/keystore.p12")) {
+        try (FileInputStream fis = new FileInputStream("classpath:/security/keystore.p12")) {
             keyStore.load(fis, "Swap@123".toCharArray());
         }
         java.security.cert.Certificate cert = keyStore.getCertificate("1");
         X509Certificate x509Cert = (X509Certificate) cert;
         // Retrieve and print the public key
         PublicKey publicKey = x509Cert.getPublicKey();
-        System.out.println("Public Key: " + publicKey);
 
         String[] encryptionArray = AsymmetricEncryptionUtil.encrypt(JsonUtil.asJsonString(productEncryptRequest),publicKey);
         EncryptionRequest encryptionRequest = EncryptionRequest.builder()
@@ -72,7 +71,7 @@ public class EncryptionController {
     @GetMapping("/alias")
     public String alias() throws KeyStoreException {
         KeyStore keyStore = KeyStore.getInstance("PKCS12");
-        try (FileInputStream fis = new FileInputStream("/Users/admin/Documents/POC/spring-boot-encryption-decryption/src/main/resources/security/keystore.p12")) {
+        try (FileInputStream fis = new FileInputStream("classpath:/security/keystore.p12")) {
             keyStore.load(fis, "Swap@123".toCharArray());
         } catch (CertificateException e) {
             e.printStackTrace();
@@ -85,7 +84,7 @@ public class EncryptionController {
         Enumeration<String> aliases = keyStore.aliases();
         while (aliases.hasMoreElements()) {
             String alias = aliases.nextElement();
-            System.out.println("Alias: " + alias);
+            log.info("alias is {}",alias);
         }
         return "SUCCESS";
     }
