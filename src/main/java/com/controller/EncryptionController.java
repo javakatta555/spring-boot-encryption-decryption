@@ -73,11 +73,7 @@ public class EncryptionController {
         KeyStore keyStore = KeyStore.getInstance("PKCS12");
         try (FileInputStream fis = new FileInputStream("classpath:/security/keystore.p12")) {
             keyStore.load(fis, "Swap@123".toCharArray());
-        } catch (CertificateException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
+        } catch (CertificateException | IOException | NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
         // List all aliases
